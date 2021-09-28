@@ -9,7 +9,7 @@ public class QSO {
     private String qsoMode;         // mode of radio contact
 
     public QSO(String callSign, String qsoDate, String qsoTime, double qsoFrequency, String qsoMode) {
-        this.callSign = callSign;
+        this.callSign = callSign.toUpperCase(Locale.ROOT);
         this.qsoDate = qsoDate;
         this.qsoTime = qsoTime;
         this.qsoFrequency = qsoFrequency;
