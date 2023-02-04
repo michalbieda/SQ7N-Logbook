@@ -35,6 +35,7 @@ public class Main {
                     log.updateLogbookEntry();
                     break;
 
+
                 case 9:
                     programOptions();
                     break;

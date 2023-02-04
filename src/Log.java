@@ -1,9 +1,12 @@
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Log {
 
+    static final String CSV_FILENAME = "logbook.csv";
     private String logbookName;
+
     private List<QSO> log = new LinkedList<>();
     private Scanner scanner = new Scanner(System.in);
 
@@ -35,7 +38,7 @@ public class Log {
     private boolean saveLogbookToCSV() {
 
         System.out.println("Trying to save..");
-        try (PrintWriter save = new PrintWriter(new File("logbook.csv"))) {
+        try (PrintWriter save = new PrintWriter(new File(CSV_FILENAME))) {
             StringBuilder sb = new StringBuilder();
             sb.append("callSign,");
             sb.append("qsoDate,");
@@ -68,22 +71,26 @@ public class Log {
 
     private boolean readLogbookFromCSVFile() {
 
-        try (BufferedReader br = new BufferedReader(new FileReader("logbook.csv"))) {
-            String line;
-            // removing CSV header
-            line = br.readLine();
+        try (BufferedReader br = new BufferedReader(new FileReader(CSV_FILENAME))) {
+            // removing CSV header by reading first line
+            String line = br.readLine();
+
             // reading logbook entries
-            while ((line = br.readLine()) != null) {
+            if ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 // todo: to fix hardcoded array fields - if import file changes with number of fields - code will produce error (missing fields or call to missing array field)
                 this.log.add(new QSO(values[0], values[1], values[2], Double.parseDouble(values[3]), values[4]));
             }
+            else {
+                return false;
+            }
+
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return true;
     }
 
@@ -125,7 +132,7 @@ public class Log {
                 QSO existingQSO = log.get(i);
                 if (callsign.equals(existingQSO.getCallSign())) {
                     System.out.println("Callsign found! -> " + existingQSO.getCallSign() + " is in logbook");
-                    return true;
+                     return true;
                 }
             }
         System.out.println("Callsign " + callsign + " not exists in logbook!");
@@ -190,6 +197,7 @@ public class Log {
         return false;
 
     }
+
 
     public boolean updateLogbookEntry() {
         System.out.println("--= Updating QSO =-- \n Enter callsign to update: ");
