@@ -123,16 +123,20 @@ public class Log {
         System.out.print("Enter mode: ");
         String mode = scanner.nextLine();
 
-        this.log.add(new QSO(callSign, date, time, frequency, mode));
-
-        for (int i = 0; i < log.size(); i++) {
-            QSO logEntries = log.get(i);
+        if (addLogbookEntry(callSign, date, time, frequency, mode) == true) {
+            System.out.println("Success!!");
+            saveLogbook();
+            return true;
+        } else {
+            System.out.println("Something went wrong!!");
+            return false;
         }
-
-        saveLogbook();
-        return true;
     }
 
+    private boolean addLogbookEntry(String callSign, String date, String time, Double frequency, String mode) {
+        this.log.add(new QSO(callSign, date, time, frequency, mode));
+        return true;
+    }
 
     public boolean findLogbookEntry() {
         System.out.println("Enter callsign to find: ");
