@@ -15,8 +15,19 @@ public class Log {
     }
 
     public boolean loadLogbook() {
-        System.out.println("Loading logbook db...");
+        System.out.print("Loading logbook db...");
+
         if (readLogbookFromCSVFile()) {
+            for (int i = 0; i < 10; i++) {
+                System.out.print(".");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+            System.out.println();
             System.out.println("Logbook loaded succesfully!");
             return true;
         } else {
@@ -27,7 +38,9 @@ public class Log {
 
     public boolean saveLogbook() {
         if (saveLogbookToCSV()) {
+
             System.out.println("Logbook saved successfully");
+
             return true;
         }
         System.out.println("Error saving logbook!");
@@ -47,13 +60,12 @@ public class Log {
             sb.append("\n");
 
 
-
             for (int i = 0; i < log.size(); i++) {
-                sb.append(log.get(i).getCallSign()+ ",");
-                sb.append(log.get(i).getQsoDate()+ ",");
-                sb.append(log.get(i).getQsoTime()+ ",");
-                sb.append(log.get(i).getQsoFrequency()+ ",");
-                sb.append(log.get(i).getQsoMode()+ ",");
+                sb.append(log.get(i).getCallSign() + ",");
+                sb.append(log.get(i).getQsoDate() + ",");
+                sb.append(log.get(i).getQsoTime() + ",");
+                sb.append(log.get(i).getQsoFrequency() + ",");
+                sb.append(log.get(i).getQsoMode() + ",");
                 sb.append("\n");
             }
 
@@ -71,17 +83,15 @@ public class Log {
     private boolean readLogbookFromCSVFile() {
 
         try (BufferedReader br = new BufferedReader(new FileReader(CSV_FILENAME))) {
-            // removing CSV header by reading first line
-            String line = br.readLine();
 
+            br.readLine(); // removing CSV header by reading first line
+
+            String line;
             // reading logbook entries
-            if ((line = br.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
                 String[] values = line.split(",");
                 // todo: to fix hardcoded array fields - if import file changes with number of fields - code will produce error (missing fields or call to missing array field)
                 this.log.add(new QSO(values[0], values[1], values[2], Double.parseDouble(values[3]), values[4]));
-            }
-            else {
-                return false;
             }
 
 
@@ -127,13 +137,13 @@ public class Log {
     public boolean findLogbookEntry() {
         System.out.println("Enter callsign to find: ");
         String callsign = scanner.nextLine().toUpperCase(Locale.ROOT);
-            for (int i = 0; i < log.size(); i++) {
-                QSO existingQSO = log.get(i);
-                if (callsign.equals(existingQSO.getCallSign())) {
-                    System.out.println("Callsign found! -> " + existingQSO.getCallSign() + " is in logbook");
-                     return true;
-                }
+        for (int i = 0; i < log.size(); i++) {
+            QSO existingQSO = log.get(i);
+            if (callsign.equals(existingQSO.getCallSign())) {
+                System.out.println("Callsign found! -> " + existingQSO.getCallSign() + " is in logbook");
+                return true;
             }
+        }
         System.out.println("Callsign " + callsign + " not exists in logbook!");
         return false;
     }
