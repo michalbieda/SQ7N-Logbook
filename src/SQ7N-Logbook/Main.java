@@ -9,42 +9,45 @@ public class Main {
 
         System.out.println("SQ7N Logbook");
 
-        log.loadLogbook();
+        if (log.loadLogbook()) {
+            programOptions();
 
-        programOptions();
+            boolean quit = false;
+            while (!quit) {
+                Scanner scanner = new Scanner(System.in);
+                int programOption = getProgramOption();
 
-        boolean quit = false;
-        while (!quit) {
-            Scanner scanner = new Scanner(System.in);
-            int programOption = getProgramOption();
-
-            switch (programOption) {
-                case 1:
-                    log.printLogbookEntries();
-                    break;
-                case 2:
-                    log.addLogbookEntry();
-                    break;
-                case 3:
-                    log.findLogbookEntry();
-                    break;
-                case 4:
-                    log.deleteLogbookEntry();
-                    break;
-                case 5:
-                    log.updateLogbookEntry();
-                    break;
+                switch (programOption) {
+                    case 1:
+                        log.printLogbookEntries();
+                        break;
+                    case 2:
+                        log.addLogbookEntry();
+                        break;
+                    case 3:
+                        log.findLogbookEntry();
+                        break;
+                    case 4:
+                        log.deleteLogbookEntry();
+                        break;
+                    case 5:
+                        log.updateLogbookEntry();
+                        break;
 
 
-                case 9:
-                    programOptions();
-                    break;
-                case 0:
-                    log.saveLogbook();
-                    quit = true;
-                    break;
+                    case 9:
+                        programOptions();
+                        break;
+                    case 0:
+                        log.saveLogbook();
+                        quit = true;
+                        break;
+                }
             }
+
         }
+
+
     }
 
 

@@ -15,13 +15,13 @@ public class Log {
     }
 
     public boolean loadLogbook() {
-        System.out.print("Loading logbook db...");
+        System.out.println("Loading logbook db...");
 
         if (readLogbookFromCSVFile()) {
             for (int i = 0; i < 10; i++) {
                 System.out.print(".");
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -31,16 +31,13 @@ public class Log {
             System.out.println("Logbook loaded succesfully!");
             return true;
         } else {
-            System.out.println("Failed to lad logbook!");
+            System.out.println("----> Failed to load logbook! <----");
             return false;
         }
     }
 
     public boolean saveLogbook() {
         if (saveLogbookToCSV()) {
-
-            System.out.println("Logbook saved successfully");
-
             return true;
         }
         System.out.println("Error saving logbook!");
@@ -48,8 +45,6 @@ public class Log {
     }
 
     private boolean saveLogbookToCSV() {
-
-        System.out.println("Trying to save..");
         try (PrintWriter save = new PrintWriter(new File(CSV_FILENAME))) {
             StringBuilder sb = new StringBuilder();
             sb.append("callSign,");
@@ -58,7 +53,6 @@ public class Log {
             sb.append("qsoFrequency,");
             sb.append("qsoMode,");
             sb.append("\n");
-
 
             for (int i = 0; i < log.size(); i++) {
                 sb.append(log.get(i).getCallSign() + ",");
@@ -79,7 +73,6 @@ public class Log {
         return false;
     }
 
-
     private boolean readLogbookFromCSVFile() {
 
         try (BufferedReader br = new BufferedReader(new FileReader(CSV_FILENAME))) {
@@ -96,7 +89,8 @@ public class Log {
 
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -145,6 +139,7 @@ public class Log {
             QSO existingQSO = log.get(i);
             if (callsign.equals(existingQSO.getCallSign())) {
                 System.out.println("Callsign found! -> " + existingQSO.getCallSign() + " is in logbook");
+                showQsoDetails(callsign);
                 return true;
             }
         }
@@ -160,6 +155,15 @@ public class Log {
             }
         }
         return -1;
+    }
+
+    public void showQsoDetails(String callsign) {
+        int searchResult = findLogbookEntry(callsign);
+        if (searchResult == -1) {
+            System.out.println("Callsign " + callsign + " has not been found in logbook.");
+        } else {
+            System.out.println("QSO Details:\n    " + log.get(searchResult).toString());
+        }
     }
 
     public void printLogbookEntries() {
@@ -200,15 +204,40 @@ public class Log {
         System.out.println("Enter callsign to remove: ");
         String callsign = scanner.nextLine().toUpperCase(Locale.ROOT);
         System.out.println("... looking for " + callsign);
+        if (findLogbookEntry(callsign) > -1) {
+            System.out.println("Found in log: ");
+            showQsoDetails(callsign);
+            System.out.println("Are you sure to delete? [ Y / N ]");
+            String opt = scanner.nextLine().toUpperCase();
+
+            switch (opt) {
+                case "Y":
+                    while (deleteLogbookEntry(callsign)) {
+                        System.out.println("Deleted successfully");
+                        return true;
+                    }
+                    break;
+                case "N": {
+                    System.out.println("Deleting canceled");
+                        return false;
+                    }
+            }
+
+        }
+
+
+
+        System.out.println("Deleting false! Callsign you have enetered does not exists in logbook.");
+        return false;
+    }
+
+    private boolean deleteLogbookEntry(String callsign) {
         if (findLogbookEntry(callsign) != -1) {
             log.remove(log.get(findLogbookEntry(callsign)));
             saveLogbook();
-            System.out.println("Deleted successfully!");
             return true;
         }
-        System.out.println("Deleting false! Callsign you have enetered does not exists in logbook.");
         return false;
-
     }
 
 
