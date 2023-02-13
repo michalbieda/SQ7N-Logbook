@@ -1,3 +1,5 @@
+package com.zulusek.Logbook;
+
 import java.io.*;
 import java.util.*;
 
@@ -5,7 +7,6 @@ public class Log {
 
     static final String CSV_FILENAME = "logbook.csv";
     private String logbookName;
-
     private List<QSO> log = new LinkedList<>();
     private Scanner scanner = new Scanner(System.in);
 
@@ -21,7 +22,7 @@ public class Log {
             for (int i = 0; i < 10; i++) {
                 System.out.print(".");
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -132,19 +133,38 @@ public class Log {
         return true;
     }
 
-    public boolean findLogbookEntry() {
+    public void findLogbookEntry() {
         System.out.println("Enter callsign to find: ");
         String callsign = scanner.nextLine().toUpperCase(Locale.ROOT);
+
+        if (findLogbookEntries(callsign) != null) {
+            for (int i = 0; i < findLogbookEntries(callsign).size(); i++) {
+                System.out.println(findLogbookEntries(callsign).get(i));
+            }
+        } else {
+            System.out.println(callsign + " not exist in logbook");
+        }
+
+    }
+
+    /**  Returns list of matching QSO's that contains of given callsign.  */
+    private List<QSO> findLogbookEntries(String callsign) {
+        List<QSO> matchingQSOs = new ArrayList<>();
+
         for (int i = 0; i < log.size(); i++) {
-            QSO existingQSO = log.get(i);
-            if (callsign.equals(existingQSO.getCallSign())) {
-                System.out.println("Callsign found! -> " + existingQSO.getCallSign() + " is in logbook");
-                showQsoDetails(callsign);
-                return true;
+            QSO check = log.get(i);
+            if (callsign.equals(check.getCallSign())) {
+                matchingQSOs.add(log.get(i));
             }
         }
-        System.out.println("Callsign " + callsign + " not exists in logbook!");
-        return false;
+
+        if (matchingQSOs.size() > 0) {
+            for (int i = 0; i < matchingQSOs.size(); i++) {
+            }
+            return matchingQSOs;
+        } else {
+            return null;
+        }
     }
 
     public int findLogbookEntry(String callsign) {
@@ -162,7 +182,7 @@ public class Log {
         if (searchResult == -1) {
             System.out.println("Callsign " + callsign + " has not been found in logbook.");
         } else {
-            System.out.println("QSO Details:\n    " + log.get(searchResult).toString());
+            System.out.println("Logbook.QSO Details:\n    " + log.get(searchResult).toString());
         }
     }
 
@@ -219,12 +239,11 @@ public class Log {
                     break;
                 case "N": {
                     System.out.println("Deleting canceled");
-                        return false;
-                    }
+                    return false;
+                }
             }
 
         }
-
 
 
         System.out.println("Deleting false! Callsign you have enetered does not exists in logbook.");
@@ -242,7 +261,7 @@ public class Log {
 
 
     public boolean updateLogbookEntry() {
-        System.out.println("--= Updating QSO =-- \n Enter callsign to update: ");
+        System.out.println("--= Updating Logbook.QSO =-- \n Enter callsign to update: ");
         String callsign = scanner.nextLine();
 
         if (findLogbookEntry(callsign) != -1) {

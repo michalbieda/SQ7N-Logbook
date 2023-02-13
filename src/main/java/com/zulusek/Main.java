@@ -1,3 +1,7 @@
+package com.zulusek;
+
+import com.zulusek.Logbook.Log;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -33,8 +37,6 @@ public class Main {
                     case 5:
                         log.updateLogbookEntry();
                         break;
-
-
                     case 9:
                         programOptions();
                         break;
@@ -54,11 +56,11 @@ public class Main {
     public static void programOptions() {
         System.out.println("Available options:");
         System.out.println("" +
-                "1 - list QSO's from logbook\n" +
-                "2 - add QSO\n" +
-                "3 - find QSO\n" +
-                "4 - delete QSO\n" +
-                "5 - update QSO\n" +
+                "1 - list Logbook QSO's from logbook\n" +
+                "2 - add Logbook QSO\n" +
+                "3 - find Logbook QSO\n" +
+                "4 - delete Logbook QSO\n" +
+                "5 - update Logbook QSO\n" +
                 "9 - to print program options\n" +
                 "0 - quit application\n");
     }

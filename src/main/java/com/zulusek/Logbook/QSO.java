@@ -1,3 +1,5 @@
+package com.zulusek.Logbook;
+
 import java.util.Locale;
 
 public class QSO {

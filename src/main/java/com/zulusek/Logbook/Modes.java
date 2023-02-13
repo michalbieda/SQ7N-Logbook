@@ -1,3 +1,5 @@
+package com.zulusek.Logbook;
+
 public enum Modes {
     USB,
     LSB,
